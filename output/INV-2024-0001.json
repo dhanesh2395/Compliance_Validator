@@ -1,0 +1,242 @@
+{
+  "invoice_id": "INV-2024-0001",
+  "overall_decision": "APPROVED",
+  "compliance_score": 100,
+  "confidence": 1.0,
+  "requires_human_review": false,
+  "validation_results": {
+    "category_a_authenticity": {
+      "score": 2,
+      "max_score": 2,
+      "checks": {
+        "A1_invoice_number": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Valid invoice number"
+        },
+        "A2_duplicate": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "No duplicate detected"
+        }
+      }
+    },
+    "category_b_gst": {
+      "score": 2,
+      "max_score": 2,
+      "checks": {
+        "B1_gstin_format": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Valid GSTIN",
+          "gstin": "27AABCT1234F1ZP",
+          "flag": "VALID_GSTIN"
+        },
+        "B7_tax_split": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Valid intra-state"
+        }
+      }
+    },
+    "category_c_arithmetic": {
+      "score": 2,
+      "max_score": 2,
+      "checks": {
+        "C1_line_calc": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "All line items verified \u2192 quantity \u00d7 rate matches amount for each item \u2192 no arithmetic mismatch found"
+        },
+        "C2_subtotal": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Totals correct"
+        }
+      }
+    },
+    "category_d_tds": {
+      "score": 2,
+      "max_score": 2,
+      "checks": {
+        "D1_tds_applicability": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "TDS applicable under Section 194J",
+          "tds_applicable": true,
+          "section": "194J",
+          "vendor": "TechSoft Solutions Private Limited",
+          "vendor_type": "IT_SERVICES",
+          "flags": [],
+          "rate": "AS_PER_ACT",
+          "reason_trace": [
+            "TDS section 194J from registry"
+          ]
+        },
+        "D2_tds_section": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Detected 194J from invoice text",
+          "tds_section": "194J",
+          "confidence": 1.0,
+          "scores": {
+            "194J": 0.8
+          },
+          "evidence": {
+            "194J": [
+              "software"
+            ]
+          }
+        }
+      }
+    },
+    "category_e_policy": {
+      "score": 1,
+      "max_score": 1,
+      "checks": {
+        "E1_po_tolerance": {
+          "score": 0,
+          "max_score": 0,
+          "status": "SKIP",
+          "reason": "there is No PO amount in the invoice"
+        },
+        "E3_vendor_approved": {
+          "score": 1,
+          "max_score": 1,
+          "status": "PASS",
+          "reason": "Vendor approved"
+        }
+      }
+    }
+  },
+  "tds_summary": {
+    "tds_applicable": true,
+    "applicability_reason": "TDS applicable under Section 194J",
+    "section_determined": true,
+    "section": "Detected 194J from invoice text",
+    "vendor_gstin": "27AABCT1234F1ZP",
+    "invoice_amount": 590000
+  },
+  "gst_summary": {
+    "gstin_valid": true,
+    "gstin": "27AABCT1234F1ZP",
+    "tax_split_valid": true,
+    "cgst": 45000,
+    "sgst": 45000,
+    "igst": 0,
+    "tax_split_reason": "Valid intra-state"
+  },
+  "audit_trail": [
+    {
+      "timestamp": "2026-05-07T11:18:01.873149Z",
+      "agent": "ExtractorAgent",
+      "action": "Structured JSON input \u2014 extraction skipped"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.873149Z",
+      "agent": "ValidatorAgent",
+      "action": "Running 10-point compliance checks"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "A1_invoice_number",
+      "status": "PASS",
+      "reason": "Valid invoice number"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "A2_duplicate",
+      "status": "PASS",
+      "reason": "No duplicate detected"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "B1_gstin_format",
+      "status": "PASS",
+      "reason": "Valid GSTIN"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "B7_tax_split",
+      "status": "PASS",
+      "reason": "Valid intra-state"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "C1_line_calc",
+      "status": "PASS",
+      "reason": "All line items verified \u2192 quantity \u00d7 rate matches amount for each item \u2192 no arithmetic mismatch found"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "C2_subtotal",
+      "status": "PASS",
+      "reason": "Totals correct"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "D1_tds_applicability",
+      "status": "PASS",
+      "reason": "TDS applicable under Section 194J"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "D2_tds_section",
+      "status": "PASS",
+      "reason": "Detected 194J from invoice text"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "E1_po_tolerance",
+      "status": "SKIP",
+      "reason": "there is No PO amount in the invoice"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ValidatorAgent",
+      "check": "E3_vendor_approved",
+      "status": "PASS",
+      "reason": "Vendor approved"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.881183Z",
+      "agent": "ResolverAgent",
+      "action": "Determining final decision"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.883210Z",
+      "agent": "ResolverAgent",
+      "action": "Decision reached",
+      "decision": "APPROVED",
+      "confidence": 1.0,
+      "reason": "All compliance checks passed"
+    },
+    {
+      "timestamp": "2026-05-07T11:18:01.884209Z",
+      "agent": "ReporterAgent",
+      "action": "Final report assembled",
+      "decision": "APPROVED",
+      "confidence": 1.0
+    }
+  ],
+  "resolver_reason": "All compliance checks passed",
+  "failed_checks": [],
+  "critical_failures": []
+}

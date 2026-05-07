@@ -1,0 +1,132 @@
+{
+  "manifest_version": "1.0",
+  "total_checks": 10,
+  "categories": {
+    "category_a_authenticity": {
+      "description": "Invoice identity and deduplication checks",
+      "max_score": 2,
+      "checks": [
+        {
+          "id": "A1_invoice_number",
+          "name": "Invoice Number Format Validation",
+          "description": "Validates that the invoice number matches the expected alphanumeric pattern (3–20 characters, uppercase letters, digits, hyphens, and slashes only).",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        },
+        {
+          "id": "A2_duplicate",
+          "name": "Duplicate Invoice Detection",
+          "description": "Detects exact and near-duplicate invoices within a 365-day rolling window. Near-duplicate scoring is a weighted blend of invoice number similarity (40%), line-item description similarity (40%), and amount similarity (20%). Threshold: 0.95.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        }
+      ]
+    },
+    "category_b_gst": {
+      "description": "GST compliance checks — GSTIN format and tax split validation",
+      "max_score": 2,
+      "checks": [
+        {
+          "id": "B1_gstin_format",
+          "name": "GSTIN Format Validation",
+          "description": "Validates the 15-character GSTIN against the Indian GST regex. Skipped for non-India vendors. Flags lowercase GSTINs for human escalation (possible OCR error). Non-India vendors auto-pass with a NON_INDIA_VENDOR flag.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL | ESCALATE_TO_HUMAN",
+          "score": { "pass": 1, "fail": 0, "escalate": 0 }
+        },
+        {
+          "id": "B7_tax_split",
+          "name": "GST Tax Split Validation",
+          "description": "Enforces mutual exclusivity of intra-state (CGST + SGST, where CGST == SGST ± 0.01) and inter-state (IGST only) tax structures. Zero-tax invoices pass. Any mixed or invalid structure fails.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        }
+      ]
+    },
+    "category_c_arithmetic": {
+      "description": "Arithmetic correctness checks — line items and totals",
+      "max_score": 2,
+      "checks": [
+        {
+          "id": "C1_line_calc",
+          "name": "Line Item Arithmetic Check",
+          "description": "For each line item, verifies that quantity × rate equals the declared amount within a ₹1 tolerance. Fails on the first mismatched line item.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        },
+        {
+          "id": "C2_subtotal",
+          "name": "Subtotal and Grand Total Check",
+          "description": "Verifies that the sum of all line-item amounts matches the declared subtotal (±₹1), and that subtotal + total_tax equals the grand total (±₹1).",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        }
+      ]
+    },
+    "category_d_tds": {
+      "description": "TDS applicability and section classification",
+      "max_score": 2,
+      "checks": [
+        {
+          "id": "D1_tds_applicability",
+          "name": "TDS Applicability Engine",
+          "description": "Multi-signal vendor classification engine. Resolves vendor from registry using GSTIN/PAN (domestic) or tax_id/legal_name (foreign). Validates vendor status (SUSPENDED/CANCELLED → FAIL). Applies Section 195 for foreign vendors. Checks LDC (lower deduction certificate) validity and 206AB penalty flag. Returns structured TDS decision with rate, section, flags, and confidence.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        },
+        {
+          "id": "D2_tds_section",
+          "name": "TDS Section Classification",
+          "description": "Keyword-frequency scoring over invoice description and line-item text to determine the most likely TDS section (194C, 194J, 194H, 194I, 194R, 194S). Returns best section, confidence, matched evidence keywords, and all section scores. Passes with NO_TDS_SIGNAL flag when no keywords match.",
+          "priority": "MEDIUM",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        }
+      ]
+    },
+    "category_e_policy": {
+      "description": "Company policy compliance — PO tolerance and vendor approval",
+      "max_score": 2,
+      "checks": [
+        {
+          "id": "E1_po_tolerance",
+          "name": "Purchase Order Tolerance Check",
+          "description": "Compares invoice total against the linked PO amount. Fails if the deviation exceeds 5%. Skipped (SKIP, score 0/0) when no PO number or amount is present on the invoice.",
+          "priority": "MEDIUM",
+          "implemented": true,
+          "status": "PASS | FAIL | SKIP",
+          "score": { "pass": 1, "fail": 0, "skip": 0 }
+        },
+        {
+          "id": "E3_vendor_approved",
+          "name": "Approved Vendor Registry Check",
+          "description": "Looks up the vendor GSTIN against the approved vendor registry. Fails if the vendor is not found in the registry. Uses the same registry structure as D1.",
+          "priority": "HIGH",
+          "implemented": true,
+          "status": "PASS | FAIL",
+          "score": { "pass": 1, "fail": 0 }
+        }
+      ]
+    }
+  },
+  "decision_thresholds": {
+    "HOLD_FOR_VERIFICATION": "Any check reason contains 'unknown', 'not found', 'missing', 'unclear', or 'unresolvable'",
+    "REJECTED": "One or more checks have status FAIL (and no HOLD condition)",
+    "ESCALATE_TO_HUMAN": "No failures but overall confidence < 0.70",
+    "APPROVED": "All checks pass and confidence >= 0.70"
+  }
+}
